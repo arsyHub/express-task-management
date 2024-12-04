@@ -2,11 +2,10 @@ import express from "express";
 
 const router = express.Router();
 
-//task
 router.get("/", (req, res) => {
   res.send(`
-    <div style="text-align: center; color: #0CCCA2; font-family: arial;">
-      <h4>Welcome to Task Manager API by @arsyHub 😊</h4>
+    <div style="color: #0CCCA2; font-family: arial; height: 100vh; display: flex; justify-content: center; align-items: center;">
+      <h3>Welcome to Task Manager API by @arsyHub 😊</h3>
     </div>
   `);
 });
