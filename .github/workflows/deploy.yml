@@ -27,4 +27,5 @@ jobs:
             cd express-task-management
             git pull origin main
             npm install
+            pm2 restart express-task
           EOF
