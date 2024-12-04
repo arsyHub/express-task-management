@@ -23,7 +23,7 @@ jobs:
       # Deploy to VPS
       - name: Deploy to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no root@203.194.114.176 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd express-task-management
             git pull origin main
             npm install
