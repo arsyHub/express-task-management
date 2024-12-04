@@ -4,7 +4,7 @@ const router = express.Router();
 
 //task
 router.get("/", (req, res) => {
-  res.send("Welcome to task manager by @arsyHub 2024");
+  res.send("Welcome to task manager by @arsyHub 😊");
 });
 router.get("/boards", (req, res) => {
   const boards = [
