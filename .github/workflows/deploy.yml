@@ -1,0 +1,31 @@
+name: CI/CD for Express App
+
+on:
+  push:
+    branches:
+      - main # Trigger hanya untuk branch `main`
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Setup SSH
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Deploy to VPS
+      - name: Deploy to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no root@203.194.114.176 << 'EOF'
+            cd express-task-management
+            git pull origin main
+            npm install
+            pm2 restart express task
+          EOF
