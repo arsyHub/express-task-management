@@ -4,8 +4,13 @@ const router = express.Router();
 
 //task
 router.get("/", (req, res) => {
-  res.send("Welcome to task manager by @arsyHub 😊");
+  res.send(`
+    <div style="text-align: center; color: #0CCCA2; font-family: arial;">
+      <h4>Welcome to Task Manager API by @arsyHub 😊</h4>
+    </div>
+  `);
 });
+
 router.get("/boards", (req, res) => {
   const boards = [
     {
