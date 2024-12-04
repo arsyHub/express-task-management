@@ -28,7 +28,7 @@ router.get("/boards", (req, res) => {
     },
     {
       id: "3c8f4d9e-67d5-4f5f-8b7f-19d8c0705cgc",
-      name: "Test CI/CDdd",
+      name: "Test CI/CD",
       user_id: "12345678-1234-5678-1234-567812345678",
       created_at: "2024-11-25T10:15:00.000Z",
     },
