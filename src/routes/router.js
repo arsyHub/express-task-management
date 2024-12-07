@@ -1,7 +1,7 @@
 import express from "express";
 import TaskController from "../controllers/TaskController.js";
 import UserController from "../controllers/UserController.js";
-// import verifySecretKey from "../middleware/verifySecretKey.js";
+import verifySecretKey from "../middleware/verifySecretKey.js";
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
   `);
 });
 
-// router.use(verifySecretKey);
+router.use(verifySecretKey);
 
 // user
 router.get("/users", UserController.getAllUsers);

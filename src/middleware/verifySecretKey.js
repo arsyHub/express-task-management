@@ -5,7 +5,10 @@ const verifySecretKey = (req, res, next) => {
   if (!secretKey) {
     return res
       .status(401)
-      .json({ message: "Unauthorized: secret_key is missing" });
+      .json({
+        message: "Unauthorized: secret_key is missing",
+        data: { req: secretKey, expected: expectedKey },
+      });
   }
 
   if (secretKey !== expectedKey) {
