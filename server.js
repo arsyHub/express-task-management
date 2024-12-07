@@ -8,6 +8,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
+app.use(
+  cors({
+    allowedHeaders: ["Content-Type", "secret_key"], // Pastikan header kustom diizinkan
+  })
+);
+
 app.use(express.json());
 app.use(jsonValidation);
 app.use(router);
