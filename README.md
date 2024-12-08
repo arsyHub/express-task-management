@@ -29,6 +29,7 @@ tag (optional): Filter tasks by tag (case-insensitive).
 status (optional): Filter tasks by status.
 due_date (optional): Filter tasks by exact due date (YYYY-MM-DD).
 user_id (optional): Filter tasks assigned to a specific user.
+project_id (optional): Filter by project id (case-insensitive).
 
 --POST /tasks
 Request Body:
