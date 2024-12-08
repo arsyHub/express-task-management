@@ -38,9 +38,7 @@ export default class UserController {
   static async createUser(req, res) {
     try {
       const { name, email } = req.body;
-      if (!name || !email) {
-        throw new Error("name and email is required");
-      }
+
       const user = await prisma.users.create({
         data: {
           name,

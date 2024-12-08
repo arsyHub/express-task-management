@@ -16,6 +16,14 @@ model Users {
 
 }
 
+model Projects {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  tasks       Tasks[]  @relation("ProjectTasks")
+}
+
 model Tasks {   
   id          String   @id @default(uuid())
   title       String
@@ -27,6 +35,8 @@ model Tasks {
   updatedAt   DateTime @updatedAt
   due_date    DateTime?     
   users       Users[]   @relation("UserTasks")
+  project_id  String?
+  project     Projects? @relation("ProjectTasks", fields: [project_id], references: [id])
 }
 
 

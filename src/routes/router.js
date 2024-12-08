@@ -1,6 +1,14 @@
 import express from "express";
 import TaskController from "../controllers/TaskController.js";
 import UserController from "../controllers/UserController.js";
+import { createUserSchema, updateUserSchema } from "../schemas/userSchema.js";
+import validateRequest from "../middleware/validateRequest.js";
+import { createTaskSchema, updateTaskSchema } from "../schemas/taskSchema.js";
+import ProjectController from "../controllers/ProjectController.js";
+import {
+  createProjectSchema,
+  updateProjectSchema,
+} from "../schemas/projectSchema.js";
 // import verifySecretKey from "../middleware/verifySecretKey.js";
 
 const router = express.Router();
@@ -19,15 +27,46 @@ router.get("/", (req, res) => {
 // user
 router.get("/users", UserController.getAllUsers);
 router.get("/users/:id", UserController.getUserById);
-router.post("/users", UserController.createUser);
-router.put("/users/:id", UserController.updateUser);
+router.post(
+  "/users",
+  validateRequest(createUserSchema),
+  UserController.createUser
+);
+router.put(
+  "/users/:id",
+  validateRequest(updateUserSchema),
+  UserController.updateUser
+);
 router.delete("/users/:id", UserController.deleteUser);
+
+// project
+router.get("/projects", ProjectController.getAllProjects);
+router.get("/projects/:id", ProjectController.getProjectById);
+router.post(
+  "/projects",
+  validateRequest(createProjectSchema),
+  ProjectController.createProject
+);
+router.put(
+  "/projects/:id",
+  validateRequest(updateProjectSchema),
+  ProjectController.updateProject
+);
+router.delete("/projects/:id", ProjectController.deleteProject);
 
 // task
 router.get("/tasks", TaskController.getAllTasks);
 router.get("/tasks/:id", TaskController.getTaskById);
-router.post("/tasks", TaskController.createTask);
-router.put("/tasks/:id", TaskController.updateTask);
+router.post(
+  "/tasks",
+  validateRequest(createTaskSchema),
+  TaskController.createTask
+);
+router.put(
+  "/tasks/:id",
+  validateRequest(updateTaskSchema),
+  TaskController.updateTask
+);
 router.delete("/tasks/:id", TaskController.deleteTask);
 
 export default router;

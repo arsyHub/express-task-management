@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 export default class TaskController {
   static async getAllTasks(req, res) {
     try {
-      const { title, tag, status, due_date, user_id } = req.query;
+      const { title, tag, status, due_date, user_id, project_id } = req.query;
 
       const filters = {};
       if (title) {
@@ -27,6 +27,9 @@ export default class TaskController {
         filters.users = {
           some: { id: user_id }, // Filter berdasarkan user_id yang terhubung
         };
+      }
+      if (project_id) {
+        filters.project_id = { equals: project_id };
       }
 
       // Query ke database dengan filter dinamis
@@ -64,19 +67,30 @@ export default class TaskController {
 
   static async createTask(req, res) {
     try {
-      const { title, description, status, tag, order, due_date, user_ids } =
-        req.body;
-      if (!title || !description || !status) {
-        throw new Error("title, description, status,  is required");
-      }
+      const {
+        project_id,
+        title,
+        description,
+        status,
+        tag,
+        order,
+        due_date,
+        user_ids = [],
+      } = req.body;
+
+      const dueDate = due_date
+        ? new Date(`${req.body.due_date}T00:00:00Z`).toISOString()
+        : null;
+
       const task = await prisma.tasks.create({
         data: {
+          project_id,
           title,
           description,
           status,
           tag,
           order,
-          due_date,
+          due_date: dueDate,
           users: {
             connect: user_ids.map((id) => ({ id })), // Menghubungkan task dengan user_ids
           },
@@ -95,8 +109,19 @@ export default class TaskController {
   static async updateTask(req, res) {
     try {
       const { id } = req.params;
-      const { title, description, status, tag, order, due_date, user_ids } =
-        req.body;
+      const {
+        title,
+        description,
+        status,
+        tag,
+        order,
+        due_date,
+        user_ids = [],
+      } = req.body;
+
+      const dueDate = due_date
+        ? new Date(`${req.body.due_date}T00:00:00Z`).toISOString()
+        : null;
 
       await prisma.tasks.update({
         where: { id },
@@ -106,7 +131,7 @@ export default class TaskController {
           status,
           tag,
           order,
-          due_date,
+          due_date: dueDate,
           //**note: jika ada 2 user, dan payload hanya mengirim 1 user maka user lama tidak akan hilang */
           //   users: {
           //     connect: user_ids.map((userId) => ({ id: userId })), // Hubungkan user_ids ke task
@@ -135,7 +160,7 @@ export default class TaskController {
     try {
       const { id } = req.params;
       if (!id) {
-        throw new Error("id is required");
+        throw new Error("param id is required");
       }
       const task = await prisma.tasks.delete({ where: { id } });
       res.status(200).json({ message: "success", data: task });
