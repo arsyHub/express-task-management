@@ -122,10 +122,9 @@ export default class TaskController {
         ...(status && { status }),
         ...(tag && { tag }),
         ...(order && { order }),
-        ...(due_date !== null ||
-          (due_date !== undefined && {
-            due_date: new Date(`${due_date}T00:00:00Z`).toISOString(),
-          })),
+        ...(due_date && {
+          due_date: new Date(`${due_date}T00:00:00Z`).toISOString(),
+        }),
         ...(user_ids && {
           users: { set: user_ids.map((userId) => ({ id: userId })) },
         }),
