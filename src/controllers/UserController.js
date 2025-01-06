@@ -74,7 +74,7 @@ export default class UserController {
       const { id } = req.params;
       const userExists = await prisma.users.findUnique({ where: { id } });
       if (!userExists) {
-        throw new Error("user not found");
+        throw new Error("user not found", 404);
       }
 
       const user = await prisma.users.delete({

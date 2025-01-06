@@ -24,8 +24,11 @@ export default class TaskController {
         filters.due_date = { equals: new Date(due_date) };
       }
       if (user_id) {
+        const userIds = user_id.split(",").map((id) => id.trim());
         filters.users = {
-          some: { id: user_id }, // Filter berdasarkan user_id yang terhubung
+          some: {
+            id: { in: userIds }, // Filter dengan user_id yang ada di array userIds
+          },
         };
       }
       if (project_id) {
@@ -109,39 +112,32 @@ export default class TaskController {
   static async updateTask(req, res) {
     try {
       const { id } = req.params;
-      const {
-        title,
-        description,
-        status,
-        tag,
-        order,
-        due_date,
-        user_ids = [],
-      } = req.body;
+      const { title, description, status, tag, order, due_date, user_ids } =
+        req.body;
 
-      const dueDate = due_date
-        ? new Date(`${req.body.due_date}T00:00:00Z`).toISOString()
-        : null;
+      // Siapkan objek data untuk pembaruan
+      const data = {
+        ...(title && { title }),
+        ...(description && { description }),
+        ...(status && { status }),
+        ...(tag && { tag }),
+        ...(order && { order }),
+        ...(due_date !== null ||
+          (due_date !== undefined && {
+            due_date: new Date(`${due_date}T00:00:00Z`).toISOString(),
+          })),
+        ...(user_ids && {
+          users: { set: user_ids.map((userId) => ({ id: userId })) },
+        }),
+      };
 
-      await prisma.tasks.update({
-        where: { id },
-        data: {
-          title,
-          description,
-          status,
-          tag,
-          order,
-          due_date: dueDate,
-          //**note: jika ada 2 user, dan payload hanya mengirim 1 user maka user lama tidak akan hilang */
-          //   users: {
-          //     connect: user_ids.map((userId) => ({ id: userId })), // Hubungkan user_ids ke task
-          //   },
-          //**note: jika ada 2 user, dan payload mengirim 1 user maka user lama akan hilang */
-          users: {
-            set: user_ids.map((userId) => ({ id: userId })), // Mengganti relasi dengan user_ids baru
-          },
-        },
-      });
+      // Hanya lakukan pembaruan jika ada data untuk diperbarui
+      if (Object.keys(data).length) {
+        await prisma.tasks.update({
+          where: { id },
+          data,
+        });
+      }
 
       const taskWithUsers = await prisma.tasks.findUnique({
         where: { id },
